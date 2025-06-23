@@ -87,7 +87,11 @@ test "parse ELF header and sections for x86_64 little-endian binary (cat)" {
     try testTypes(&binary, elfy.ElfProgram, &expected_segments_types);
 
     // First ten sections name
-    const expected_sections_names = [_][]const u8{ "", ".note.gnu.property", ".note.gnu.build-id", ".interp", ".gnu.hash", ".dynsym", ".dynstr", ".gnu.version", ".gnu.version_r", ".rela.dyn" };
+    const expected_sections_names = [_][]const u8{ 
+         "", ".note.gnu.property", ".note.gnu.build-id", 
+         ".interp", ".gnu.hash", ".dynsym", ".dynstr", 
+         ".gnu.version", ".gnu.version_r", ".rela.dyn" 
+    };
     try testNames(&binary, elfy.ElfSection, &expected_sections_names);
 
     // First ten symbols name
@@ -114,7 +118,12 @@ test "parse ELF header and sections for x86_64 little-endian binary (cat)" {
     try testTypes(&binary, elfy.ElfDynamic, expected_dyns_type);
 
     // First ten linked symbols name
-    const expected_reloc_linked_names = [_][]const u8{ "free", "__vfprintf_chk", "__libc_start_main", "abort", "__errno_location", "strncmp", "_ITM_deregisterTMCloneTable", "stdout", "_exit", "__fpending" };
+    const expected_reloc_linked_names = [_][]const u8{ 
+         "free",  "__vfprintf_chk",     "__libc_start_main",
+         "abort", "__errno_location",   "strncmp",
+         "_ITM_deregisterTMCloneTable", "stdout", 
+         "_exit",                       "__fpending" 
+    };
     try testNames(&binary, elfy.ElfRelocation, &expected_reloc_linked_names);
 }
 
