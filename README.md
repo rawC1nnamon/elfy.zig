@@ -1,4 +1,4 @@
-# Fast and tiny ELF parsing library for Zig
+# Elfy
 
 **Elfy** is an ELF parsing library that uses **mmap** (multi-platform) to map files into memory for reading. It supports both 32-bit and 64-bit ELF formats and handles little/big-endian byte ordering.
 
