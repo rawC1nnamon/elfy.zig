@@ -86,15 +86,7 @@ pub fn init(path: []const u8, mode: MapMode, allocator: Allocator) ElfError!Elf 
     };
 
     const bits = if (header.getClass() == 1) "32" else "64";
-    var Instance = Elf{
-        .file = file,
-        .reader = Reader,
-        .bits = bits,
-        .allocator = allocator,
-        .header = header,
-        .section_cache = std.AutoHashMap(u64, ElfSection).init(allocator),
-        .symbol_name_cache = std.AutoHashMap(u64, []const u8).init(allocator)
-    };
+    var Instance = Elf{ .file = file, .reader = Reader, .bits = bits, .allocator = allocator, .header = header, .section_cache = std.AutoHashMap(u64, ElfSection).init(allocator), .symbol_name_cache = std.AutoHashMap(u64, []const u8).init(allocator) };
 
     // Generate cache using the elf instance
 
@@ -233,10 +225,7 @@ pub fn getDynName(self: *Elf, dynamic: ElfDynamic) ElfError!?[]const u8 {
 
     // If the dynamic tag has an associated name, return it, otherwise, return null
     return switch (dynamic.getTag()) {
-        .DT_NEEDED, .DT_SONAME, 
-        .DT_RPATH, .DT_RUNPATH, 
-        .DT_AUXILIARY, .DT_FILTER, 
-        .DT_CONFIG, .DT_DEPAUDIT, .DT_AUDIT => try readNameFromTable(dynstr, dynamic.getValue()),
+        .DT_NEEDED, .DT_SONAME, .DT_RPATH, .DT_RUNPATH, .DT_AUXILIARY, .DT_FILTER, .DT_CONFIG, .DT_DEPAUDIT, .DT_AUDIT => try readNameFromTable(dynstr, dynamic.getValue()),
         else => null,
     };
 }
@@ -257,7 +246,7 @@ pub fn getRelocationLinkedSymbol(self: *Elf, relocation: ElfRelocation, index: u
 }
 
 // Returns the name from the given string table using the offset
-fn readNameFromTable(table: []const u8, offset: u64) ElfError![]const u8 {
+pub fn readNameFromTable(table: []const u8, offset: u64) ElfError![]const u8 {
     if (offset >= table.len) return ElfError.InvalidNameOffset;
     return mem.sliceTo(table[offset..], 0);
 }
