@@ -60,7 +60,12 @@ pub fn init(path: []const u8, mode: MapMode, allocator: Allocator) ElfError!Elf 
     const file = try fs.cwd().openFile(path, .{});
     errdefer file.close();
 
-    const e_ident = file.reader().readBytesNoEof(elf.EI_NIDENT) catch return ElfError.EndOfStream;
+    var e_ident: [elf.EI_NIDENT]u8 = undefined;
+    var file_reader = file.reader(&e_ident);
+    const reader = &file_reader.interface;
+
+    e_ident = (reader.takeArray(elf.EI_NIDENT) catch return ElfError.EndOfStream).*;
+
     assert(mem.eql(u8, e_ident[0..4], elf.MAGIC));
 
     const endian: std.builtin.Endian = switch (e_ident[elf.EI_DATA]) {
