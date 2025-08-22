@@ -23,7 +23,7 @@ pub const MapError = error{
     InvalidOffset,
     MemoryMapNotMutable,
     NoMutableBuffer,
-} || fs.File.WriteError || fs.File.OpenError || fs.File.StatError || posix.MMapError || fs.File.ReadError;
+} || std.posix.WriteError || fs.File.OpenError || fs.File.StatError || posix.MMapError || fs.File.ReadError;
 
 buffer: []const u8,
 mut_buffer: ?[]u8,
@@ -108,7 +108,7 @@ pub fn newFile(self: *Map, name: []const u8) MapError!void {
     const file = try fs.cwd().createFile(name, .{});
     defer file.close();
 
-    try file.writeAll(buf);
+    try file.writeAll(buf); // TODO: Implement new writer API
 }
 
 extern "kernel32" fn CreateFileMappingA(
